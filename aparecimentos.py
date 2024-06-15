@@ -1,16 +1,17 @@
-from operator import itemgetter
+import pandas 
 
-numeros = {}
-cont = 60
-jogos = open('jogos.txt')
-num = jogos.read().replace('\n', ' ').split()
 
-for c in range(1, 61):
-    numeros[str(c)] = num.count(str(c))
-print(f'{"Rank.":<13}{"Nº":<8}{"Aparecimentos"}')
-print('-' * 21)
+jogos = pandas.read_excel('historico_jogos_ms.xlsx')
+contagens = {}
 
-for k, v in sorted(numeros.items(), key=itemgetter(1)):
-    print(f'{f"{cont}º lugar":<13}\033[33m{k:<9}\033[32m{v}\033[m')
-    cont -= 1
-print('-' * 21)
+for i in range(len(jogos)):
+    for num in jogos.loc[i][1:]:
+        contagens[num] = contagens.get(num, 0) + 1
+
+contagens = dict(sorted(contagens.items(), key=lambda item: item[1]))
+
+for pos, num in enumerate(contagens):
+    print(f'Número \033[33m{num}\033[m: \
+    sorteado \033[36m{contagens[num]}\033[m vezes \
+    (\033[32m{60-pos}°\033[m lugar)')
+    
